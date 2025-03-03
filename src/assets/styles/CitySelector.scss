@@ -1,0 +1,25 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.city-selector {
+  background-color: $primary-color;
+  color: white;
+  padding: 10px 15px;
+  @include border-radius(5px);
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+  width: 200px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  &:hover {
+    background-color: darken($primary-color, 5%);
+    transform: scale(1.05);
+  }
+}
