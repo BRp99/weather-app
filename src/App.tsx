@@ -1,26 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react"
+import { fetchWeather, WeatherData } from "./services/weatherService"
+import "./assets/styles/global.scss"
 
-function App() {
+import CitySelector from "./components/CitySelector"
+import TemperatureToggle from "./components/TemperatureToggle"
+import WeatherCard from "./components/WeatherCard"
+import Loading from "./components/Loading"
+
+const App: React.FC = () => {
+  const [weather, setWeather] = useState<WeatherData | null>(null)
+  const [city, setCity] = useState<string>("Lisbon")
+  const [isCelsius, setIsCelsius] = useState(true)
+
+  useEffect(() => {
+    fetchWeather(city).then(setWeather).catch(console.error)
+  }, [city])
+
+  const handleSelectCity = (city: string) => {
+    setCity(city)
+  }
+
+  const handleToggleTemperature = () => {
+    setIsCelsius(!isCelsius)
+  }
+
+  const convertTemperature = (tempInCelsius: number) => {
+    const tempInFahrenheit = isCelsius ? tempInCelsius : (tempInCelsius * 9) / 5 + 32
+
+    return parseFloat(tempInFahrenheit.toFixed(2))
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container">
+      <div className="controls-container">
+        <CitySelector onSelectCity={handleSelectCity} />
+        <TemperatureToggle onToggle={handleToggleTemperature} isCelsius={isCelsius} />
+      </div>
+
+      {weather ? <WeatherCard weather={weather} convertTemperature={convertTemperature} /> : <Loading />}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
