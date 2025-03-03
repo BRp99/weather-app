@@ -1,15 +1,28 @@
-import "./App.css"
-import { useEffect } from "react"
-import { fetchWeather } from "./services/weatherService"
+import React, { useEffect, useState } from "react"
+import { fetchWeather, WeatherData } from "./services/weatherService"
 
-function App() {
+const App: React.FC = () => {
+  const [weather, setWeather] = useState<WeatherData | null>(null)
+
   useEffect(() => {
-    fetchWeather("Lisbon")
-      .then((data) => console.log("API working:", data))
-      .catch((error) => console.error("API ERROR:", error))
+    fetchWeather("Lisbon").then(setWeather).catch(console.error)
   }, [])
 
-  return <div className="App">API TEST</div>
+  return (
+    <div>
+      {weather ? (
+        <div>
+          <h1>Weather in {weather.city}</h1>
+          <p>Temperature: {weather.temperature}°C</p>
+          <img src={weather.icon} alt="Weather icon" />
+          <p>🌅Sunrise: {weather.sunrise}</p>
+          <p>🌇 Sunset: {weather.sunset}</p>
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
+    </div>
+  )
 }
 
 export default App
